@@ -1,0 +1,76 @@
+% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Department Reports Tracking</h2>
+    
+    <!-- Overall Statistics -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Total Reports</h5>
+                    <h2>{{ report_stats.total }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-dark">
+                <div class="card-body">
+                    <h5 class="card-title">Pending</h5>
+                    <h2>{{ report_stats.pending }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Approved</h5>
+                    <h2>{{ report_stats.approved }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-danger text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Rejected</h5>
+                    <h2>{{ report_stats.rejected }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Report Types Status -->
+    <h3>Report Types Status</h3>
+    <div class="row">
+        {% for type, stats in report_types_status.items %}
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ type }}</h5>
+                    <div class="progress mb-3">
+                        <div class="progress-bar" role="progressbar" 
+                             style="width: {% widthratio stats.approved stats.total 100 %}%"
+                             aria-valuenow="{% widthratio stats.approved stats.total 100 %}"
+                             aria-valuemin="0" aria-valuemax="100">
+                            {{ stats.approved }}/{{ stats.total }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    {% if report_stats.total == report_stats.approved %}
+    <div class="text-center mt-4">
+        <a href="{% url 'generate_annual_report' %}" class="btn btn-lg btn-primary">
+            Generate Annual Report
+        </a>
+    </div>
+    {% else %}
+    <div class="alert alert-warning">
+        All reports must be approved before generating the annual report.
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

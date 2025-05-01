@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Comments for {{ report.title }}</h2>
+<ul>
+    {% for comment in comments %}
+    <li>
+        <strong>{{ comment.commented_by.full_name }}</strong> ({{ comment.created_at|date:"M d, Y H:i" }}):<br>
+        {{ comment.comment }}
+    </li>
+    {% empty %}
+    <li>No comments yet.</li>
+    {% endfor %}
+</ul>
+<a href="{% url 'add_comment' report.id %}">Add a Comment</a>
+{% endblock %}

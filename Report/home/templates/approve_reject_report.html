@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <h1>Workspace Report</h1>
+    {% if report %}
+    <table>
+        <thead>
+            <tr>
+                <th>Report ID</th>
+                <th>Type</th>
+                <th>Department</th>
+                <th>Status</th>
+                <th>Feedback</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ report.id }}</td>
+                <td>{{ report.get_report_type_display }}</td>
+                <td>{{ report.department }}</td>
+                <td>{{ report.status }}</td>
+                <td>{{ report.feedback }}</td>
+                <td>
+                    <!-- Approve/Reject Form -->
+                    <form method="post" action="{% url 'approve_reject_report' report.id %}">
+                        {% csrf_token %}
+                        <label for="feedback_{{ report.id }}">Feedback:</label>
+                        <textarea name="feedback" id="feedback_{{ report.id }}" rows="2" placeholder="Add feedback...">{{ report.feedback }}</textarea>
+                        <button type="submit" name="action" value="approve" class="btn btn-success">Approve</button>
+                        <button type="submit" name="action" value="reject" class="btn btn-danger">Reject</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    {% else %}
+    <p>No report found for review.</p>
+    {% endif %}
+</div>
+{% endblock %}
+

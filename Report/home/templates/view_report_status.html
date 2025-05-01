@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Report Status</h2>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                    <th>Submitted Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for report in reports %}
+                <tr>
+                    <td>{{ report.title }}</td>
+                    <td>{{ report.get_report_type_display }}</td>
+                    <td>
+                        <span class="badge {% if report.status == 'approved' %}bg-success
+                                         {% elif report.status == 'rejected' %}bg-danger
+                                         {% else %}bg-warning{% endif %}">
+                            {{ report.get_status_display }}
+                        </span>
+                    </td>
+                    <td>{{ report.created_at|date:"M d, Y" }}</td>
+                    <td>
+                        <a href="{{ report.file.url }}" class="btn btn-sm btn-info" target="_blank">
+                            View Original
+                        </a>
+                        <a href="{% url 'download_converted_report' report.id %}" 
+                           class="btn btn-sm btn-secondary">
+                            Download as PDF
+                        </a>
+                        {% if report.feedback %}
+                        <button class="btn btn-sm btn-outline-info" 
+                                data-bs-toggle="tooltip" 
+                                title="{{ report.feedback }}">
+                            View Feedback
+                        </button>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5">No reports found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

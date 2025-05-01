@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HOD Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto p-4">
+        <h1 class="text-3xl font-bold mb-4">Welcome, HOD!</h1>
+        <p class="mb-6">Manage your department and assign tasks here.</p>
+        <h2 class="text-2xl font-semibold mb-4">My Tasks</h2>
+        {% if tasks %}
+            <ul class="space-y-4">
+                {% for task in tasks %}
+                    <li class="bg-white p-4 rounded-lg shadow-md">
+                        <strong class="text-xl">{{ task.title }}</strong><br>
+                        <p>Description: {{ task.description }}</p>
+                        <p>Due Date: {{ task.due_date|date:"d M Y H:i" }}</p>
+                        <p>Status: {{ task.status }}</p>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-gray-500">No tasks assigned yet.</p>
+        {% endif %}
+
+        <table class="min-w-full bg-white mt-6">
+            <thead>
+                <tr>
+                    <th class="py-2">Title</th>
+                    <th class="py-2">Description</th>
+                    <th class="py-2">Progress</th>
+                    <th class="py-2">Status</th>
+                    <th class="py-2">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for task in tasks %}
+                <tr class="border-b">
+                    <td class="py-2 px-4">{{ task.title }}</td>
+                    <td class="py-2 px-4">{{ task.description }}</td>
+                    <td class="py-2 px-4">{{ task.progress }}%</td>
+                    <td class="py-2 px-4">{{ task.status }}</td>
+                    <td class="py-2 px-4">
+                        <a href="{% url 'update_task' task.id %}" class="bg-blue-500 text-white px-3 py-1 rounded">Update</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
+{% endblock %}

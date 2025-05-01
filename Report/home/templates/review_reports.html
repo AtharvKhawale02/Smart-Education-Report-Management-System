@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Review Reports</h2>
+    <div class="row">
+        {% for report in pending_reports %}
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ report.title }}</h5>
+                    <p class="card-text">
+                        <strong>Type:</strong> {{ report.get_report_type_display }}<br>
+                        <strong>Submitted By:</strong> {{ report.submitted_by.full_name }}<br>
+                        <strong>Submitted On:</strong> {{ report.created_at|date:"M d, Y" }}
+                    </p>
+                    <a href="{{ report.file.url }}" class="btn btn-info" target="_blank">View Report</a>
+                    <a href="{% url 'approve_reject_report' report.id %}" 
+                       class="btn btn-primary">Review</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <p>No pending reports to review.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

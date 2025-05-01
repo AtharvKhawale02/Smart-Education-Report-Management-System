@@ -1,0 +1,115 @@
+<!-- templates/reports/analytics.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-8">Analytics Dashboard</h1>
+
+    <!-- Academic Year Overview -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h3 class="text-lg font-semibold text-gray-600">Total Reports</h3>
+            <p class="text-3xl font-bold text-blue-600">{{ dept_stats.total_reports__sum }}</p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h3 class="text-lg font-semibold text-gray-600">Approved Reports</h3>
+            <p class="text-3xl font-bold text-green-600">{{ dept_stats.approved_reports__sum }}</p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h3 class="text-lg font-semibold text-gray-600">Pending Reports</h3>
+            <p class="text-3xl font-bold text-yellow-600">{{ dept_stats.pending_reports__sum }}</p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h3 class="text-lg font-semibold text-gray-600">Rejected Reports</h3>
+            <p class="text-3xl font-bold text-red-600">{{ dept_stats.rejected_reports__sum }}</p>
+        </div>
+    </div>
+
+    <!-- Department-wise Statistics -->
+    <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+        <h2 class="text-xl font-bold mb-4">Department Statistics</h2>
+        <div class="overflow-x-auto">
+            <table class="min-w-full">
+                <thead>
+                    <tr class="bg-gray-100">
+                        <th class="px-6 py-3 text-left">Department</th>
+                        <th class="px-6 py-3 text-center">Total</th>
+                        <th class="px-6 py-3 text-center">Approved</th>
+                        <th class="px-6 py-3 text-center">Pending</th>
+                        <th class="px-6 py-3 text-center">Rejected</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for stat in dept_stats %}
+                    <tr class="border-b">
+                        <td class="px-6 py-4">{{ stat.department__name }}</td>
+                        <td class="px-6 py-4 text-center">{{ stat.total_reports }}</td>
+                        <td class="px-6 py-4 text-center text-green-600">{{ stat.approved_reports }}</td>
+                        <td class="px-6 py-4 text-center text-yellow-600">{{ stat.pending_reports }}</td>
+                        <td class="px-6 py-4 text-center text-red-600">{{ stat.rejected_reports }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Monthly Submission Trends -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-xl font-bold mb-4">Monthly Submission Trends</h2>
+            <div class="h-64">
+                <!-- Add chart using your preferred JS library -->
+                <canvas id="monthlyTrendsChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Section Completion Rates -->
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-xl font-bold mb-4">Section Completion Rates</h2>
+            <div class="h-64">
+                <canvas id="sectionCompletionChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Monthly Trends Chart
+    const monthlyData = {{ monthly_trends|safe }};
+    new Chart(document.getElementById('monthlyTrendsChart'), {
+        type: 'line',
+        data: {
+            labels: monthlyData.map(item => item.month),
+            datasets: [{
+                label: 'Submissions',
+                data: monthlyData.map(item => item.submissions),
+                borderColor: '#3498db',
+                tension: 0.1
+            }]
+        }
+    });
+
+    // Section Completion Chart
+    const sectionData = {{ section_stats|safe }};
+    new Chart(document.getElementById('sectionCompletionChart'), {
+        type: 'doughnut',
+        data: {
+            labels: sectionData.map(item => item.section__name),
+            datasets: [{
+                data: sectionData.map(item => item.completion_rate),
+                backgroundColor: [
+                    '#2ecc71',
+                    '#3498db',
+                    '#9b59b6',
+                    '#f1c40f',
+                    '#e74c3c'
+                ]
+            }]
+        }
+    });
+</script>
+{% endblock %}
+{% endblock %}

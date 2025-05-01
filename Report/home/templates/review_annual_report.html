@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Review Annual Report</h2>
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">{{ annual_report.title }}</h5>
+            <p class="card-text">
+                <strong>Department:</strong> {{ annual_report.department.name }}<br>
+                <strong>Academic Year:</strong> {{ annual_report.academic_year }}<br>
+                <strong>Submitted:</strong> {{ annual_report.submitted_at|date:"M d, Y" }}
+            </p>
+            <a href="{{ annual_report.compiled_file.url }}" class="btn btn-info mb-3" target="_blank">
+                View Report
+            </a>
+            
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="feedback" class="form-label">Feedback</label>
+                    <textarea class="form-control" id="feedback" name="feedback" rows="3" required></textarea>
+                </div>
+                <button type="submit" name="action" value="approve" class="btn btn-success">
+                    Approve Report
+                </button>
+                <button type="submit" name="action" value="reject" class="btn btn-danger">
+                    Reject Report
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Department Annual Reports</h2>
+    <div class="row">
+        {% for report in annual_reports %}
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ report.title }}</h5>
+                    <p class="card-text">
+                        <strong>Department:</strong> {{ report.department.name }}<br>
+                        <strong>Academic Year:</strong> {{ report.academic_year }}<br>
+                        <strong>Submitted:</strong> {{ report.submitted_at|date:"M d, Y" }}
+                    </p>
+                    <a href="{{ report.compiled_file.url }}" class="btn btn-primary" target="_blank">
+                        View Report
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <p>No annual reports submitted yet.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

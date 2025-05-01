@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Delegate Task</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="title" class="form-label">Task Title</label>
+            <input type="text" id="title" name="title" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">Task Description</label>
+            <textarea id="description" name="description" class="form-control" rows="3" required></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="assigned_to" class="form-label">Assign To</label>
+            <select id="assigned_to" name="assigned_to" class="form-select" required>
+                {% for member in faculty_members %}
+                <option value="{{ member.id }}">{{ member.full_name }} ({{ member.username }})</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="due_date" class="form-label">Due Date</label>
+            <input type="datetime-local" id="due_date" name="due_date" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-success">Delegate Task</button>
+    </form>
+</div>
+{% endblock %}

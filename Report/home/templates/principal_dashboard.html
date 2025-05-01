@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Principal Dashboard</h2>
+
+    <!-- Overall Statistics -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Total Departments</h5>
+                    <h2>{{ report_stats.total_departments }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Total Reports</h5>
+                    <h2>{{ report_stats.total_reports }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-dark">
+                <div class="card-body">
+                    <h5 class="card-title">Pending Reports</h5>
+                    <h2>{{ report_stats.pending_reports }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Approved Reports</h5>
+                    <h2>{{ report_stats.approved_reports }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Department-wise Status -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4>Department Status</h4>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Department</th>
+                            <th>Total Reports</th>
+                            <th>Pending</th>
+                            <th>Approved</th>
+                            <th>Annual Report Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for dept in department_stats %}
+                        <tr>
+                            <td>{{ dept.name }}</td>
+                            <td>{{ dept.total_reports }}</td>
+                            <td>{{ dept.pending_reports }}</td>
+                            <td>{{ dept.approved_reports }}</td>
+                            <td>
+                                {% if dept.annual_report %}
+                                    <span class="badge {% if dept.annual_report.status == 'approved' %}bg-success
+                                                     {% elif dept.annual_report.status == 'rejected' %}bg-danger
+                                                     {% else %}bg-warning{% endif %}">
+                                        {{ dept.annual_report.get_status_display }}
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Not Generated</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Annual Reports -->
+    <div class="card">
+        <div class="card-header">
+            <h4>Department Annual Reports</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                {% for report in annual_reports %}
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ report.department.name }}</h5>
+                            <p class="card-text">
+                                <strong>Academic Year:</strong> {{ report.academic_year }}<br>
+                                <strong>Status:</strong> {{ report.get_status_display }}<br>
+                                <strong>Submitted:</strong> {{ report.submitted_at|date:"M d, Y" }}
+                            </p>
+                            <a href="{{ report.compiled_file.url }}" class="btn btn-primary" target="_blank">
+                                View Report
+                            </a>
+                            {% if report.status == 'submitted' %}
+                            <a href="{% url 'review_annual_report' report.id %}" class="btn btn-info">
+                                Review Report
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12">
+                    <p>No annual reports submitted yet.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
